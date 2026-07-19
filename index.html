@@ -3,57 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mustang Chat</title>
-    <!-- Favicon -->
-    <link rel="icon" href="assets/favicon.png" type="image/png">
-    <!-- File CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <title>Mustang Chat 🐎 - Realtime Messenger</title>
+    <!-- Tailwind & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (Bổ sung thêm Auth) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <style>
+        /* CHẾ ĐỘ MẶC ĐỊNH (TỐI) - Kế thừa từ mã gốc[span_1](start_span)[span_1](end_span) */
+        :root {
+            --theme-color: #3b82f6; /* Đổi màu xanh cho Mustang */
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #020617;
+            --text-main: #f1f5f9;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(2, 6, 23, 0.8);
+        }
+
+        /* CHẾ ĐỘ SÁNG[span_2](start_span)[span_2](end_span) */
+        .light-mode {
+            --theme-color: #2563eb;
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-end: #e2e8f0;
+            --text-main: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-main);
+            transition: background 0.5s ease, color 0.5s ease;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+        }
+
+        /* CHAT BUBBLES[span_3](start_span)[span_3](end_span) */
+        .chat-bubble-mine { 
+            background: var(--theme-color); 
+            color: white; 
+            border-radius: 14px 14px 0 14px; 
+            padding: 10px 14px;
+            word-break: break-word;
+        }
+        .chat-bubble-other { 
+            background: rgba(100, 116, 139, 0.3); 
+            border-radius: 14px 14px 14px 0; 
+            padding: 10px 14px;
+            word-break: break-word;
+        }
+    </style>
 </head>
-<body>
+<body id="mainBody">
 
-    <!-- MÀN HÌNH ĐĂNG NHẬP -->
-    <div id="login-section">
-        <h1>Mustang Chat</h1>
-        <p>Kết nối thời gian thực</p>
-        <button id="login-btn">Đăng nhập bằng Google</button>
-    </div>
+    <!-- NÚT CHUYỂN THEME -->
+    <button onclick="toggleTheme()" class="fixed top-4 right-4 z-50 bg-slate-800 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
 
-    <!-- MÀN HÌNH CHAT (Mặc định ẩn) -->
-    <div id="mustang-chat-app" style="display: none;">
+    <div class="w-full max-w-md h-full md:h-[90vh] glass-panel md:rounded-3xl shadow-2xl flex flex-col relative overflow-hidden">
         
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="user-info">
-                <img id="user-avatar" src="" alt="Avatar">
-                <span id="user-name">Đang tải...</span>
+        <!-- ================= MÀN HÌNH ĐĂNG NHẬP / ĐĂNG KÝ ================= -->
+        <div id="authScreen" class="p-8 flex flex-col justify-center h-full space-y-6">
+            <div class="text-center">
+                <i class="fa-solid fa-horse-head text-5xl text-blue-500 mb-3"></i>
+                <h1 class="text-3xl font-bold">Mustang Chat</h1>
+                <p class="text-sm opacity-70 mt-1">Kết nối không giới hạn</p>
             </div>
             
-            <div class="header-actions">
-                <!-- Nút chọn giao diện -->
-                <select id="theme-selector">
-                    <option value="light">☀️ Sáng</option>
-                    <option value="dark">🌙 Tối</option>
-                    <option value="ocean">🌊 Biển</option>
-                    <option value="hacker">💻 Hacker</option>
-                </select>
-                <button id="logout-btn">Đăng xuất</button>
+            <div class="space-y-4">
+                <input type="email" id="emailInput" placeholder="Email" class="w-full p-3 rounded-xl border border-slate-600 bg-transparent outline-none focus:border-blue-500">
+                <input type="password" id="passwordInput" placeholder="Mật khẩu" class="w-full p-3 rounded-xl border border-slate-600 bg-transparent outline-none focus:border-blue-500">
+                
+                <button onclick="handleLogin()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition shadow-lg shadow-blue-500/30">Đăng Nhập</button>
+                <button onclick="handleRegister()" class="w-full py-3 border border-blue-500 text-blue-500 hover:bg-blue-500/10 font-bold rounded-xl transition">Đăng Ký Mới</button>
             </div>
         </div>
 
-        <!-- Khu vực hiển thị tin nhắn -->
-        <div id="messages-container"></div>
+        <!-- ================= MÀN HÌNH CHÍNH (PROFILE & CHAT) ================= -->
+        <div id="mainScreen" class="hidden flex-col h-full">
+            
+            <!-- HEADER / PROFILE MINI -->
+            <div class="p-4 border-b border-slate-700/50 flex justify-between items-center cursor-pointer hover:bg-slate-500/10 transition" onclick="toggleProfile()">
+                <div class="flex items-center gap-3">
+                    <img id="userAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mustang" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-500">
+                    <div>
+                        <h3 id="userName" class="font-bold text-sm">Người dùng ẩn danh</h3>
+                        <p class="text-[10px] text-green-400"><i class="fa-solid fa-circle text-[8px]"></i> Đang hoạt động</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-bars text-slate-400"></i>
+            </div>
 
-        <!-- Khu vực nhập tin nhắn -->
-        <div class="chat-input-area">
-            <input type="text" id="message-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
-            <button id="send-btn">Gửi</button>
+            <!-- MODAL PROFILE CHI TIẾT -->
+            <div id="profileModal" class="hidden absolute inset-0 glass-panel z-40 flex-col p-6 items-center">
+                <button onclick="toggleProfile()" class="absolute top-4 left-4 text-slate-400"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                <button onclick="handleLogout()" class="absolute top-4 right-4 text-red-400"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+                
+                <img id="profileAvatarBig" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mustang" class="w-24 h-24 rounded-full mt-10 border-2 border-blue-500 shadow-lg">
+                <input type="text" id="editName" placeholder="Tên hiển thị" class="mt-4 w-full p-2 text-center bg-transparent border-b border-slate-600 focus:border-blue-500 outline-none font-bold text-lg">
+                <input type="text" id="editBio" placeholder="Viết tiểu sử (Bio)..." class="mt-2 w-full p-2 text-center bg-transparent border-b border-slate-600 focus:border-blue-500 outline-none text-sm opacity-80">
+                
+                <div class="flex gap-6 mt-6 text-center">
+                    <div>
+                        <div class="font-bold text-xl text-blue-400" id="followerCount">0</div>
+                        <div class="text-xs opacity-70">Followers</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl text-blue-400">0</div>
+                        <div class="text-xs opacity-70">Đang Follow</div>
+                    </div>
+                </div>
+                
+                <button onclick="saveProfile()" class="mt-8 w-full py-2 bg-blue-600 text-white rounded-lg font-bold shadow-lg">Lưu Hồ Sơ</button>
+            </div>
+
+            <!-- KHU VỰC CHAT[span_4](start_span)[span_4](end_span) -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <!-- Tin nhắn sẽ được load vào đây -->
+            </div>
+
+            <!-- THANH NHẬP LƯU[span_5](start_span)[span_5](end_span) -->
+            <div class="p-3 border-t border-slate-700/50 flex gap-2">
+                <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Nhập tin nhắn..." class="flex-1 bg-slate-800/50 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 border border-slate-700/80">
+                <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white w-11 h-11 rounded-xl flex items-center justify-center transition shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </div>
+
         </div>
     </div>
 
-    <!-- Liên kết các file JavaScript (phải có type="module") -->
-    <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/ui.js"></script>
-    <script type="module" src="js/auth.js"></script>
-    <script type="module" src="js/chat.js"></script>
+    <script>
+        // Khởi tạo Firebase từ file gốc[span_6](start_span)[span_6](end_span)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtebZ6KlzYO-xoHAh6qfz6duS3cTlyF04",
+            authDomain: "nhatky-9acf5.firebaseapp.com",
+            projectId: "nhatky-9acf5",
+            messagingSenderId: "508563399846",
+            appId: "1:508563399846:web:d5fb08bf1f383ebd340067"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let chatUnsubscribe = null;
+        const GLOBAL_ROOM_ID = "MUSTANG_GLOBAL"; // Phòng chat chung
+
+        // ================= XỬ LÝ THEME[span_7](start_span)[span_7](end_span) =================
+        function toggleTheme() {
+            const body = document.getElementById('mainBody');
+            const icon = document.getElementById('themeIcon');
+            body.classList.toggle('light-mode');
+            if(body.classList.contains('light-mode')) {
+                icon.className = "fa-solid fa-sun";
+            } else {
+                icon.className = "fa-solid fa-moon";
+            }
+        }
+
+        // ================= XÁC THỰC & AUTH =================
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('hidden');
+                document.getElementById('mainScreen').classList.add('flex');
+                loadUserProfile();
+                listenToChat(GLOBAL_ROOM_ID);
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('mainScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('flex');
+                if(chatUnsubscribe) chatUnsubscribe();
+            }
+        });
+
+        async function handleRegister() {
+            const email = document.getElementById('emailInput').value;
+            const pass = document.getElementById('passwordInput').value;
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+                // Khởi tạo Profile mặc định
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    displayName: email.split('@')[0],
+                    bio: "Lính mới gia nhập Mustang Chat!",
+                    followers: 0,
+                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userCredential.user.uid}`
+                });
+            } catch (error) { alert(error.message); }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const pass = document.getElementById('passwordInput').value;
+            try { await auth.signInWithEmailAndPassword(email, pass); } 
+            catch (error) { alert("Sai tài khoản hoặc mật khẩu!"); }
+        }
+
+        function handleLogout() { auth.signOut(); }
+
+        // ================= HỒ SƠ NGƯỜI DÙNG (PROFILE) =================
+        function toggleProfile() {
+            document.getElementById('profileModal').classList.toggle('hidden');
+            document.getElementById('profileModal').classList.toggle('flex');
+        }
+
+        async function loadUserProfile() {
+            const doc = await db.collection('users').doc(currentUser.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('userName').innerText = data.displayName || "Người dùng";
+                document.getElementById('userAvatar').src = data.avatar;
+                
+                // Load vào Modal Edit
+                document.getElementById('profileAvatarBig').src = data.avatar;
+                document.getElementById('editName').value = data.displayName || "";
+                document.getElementById('editBio').value = data.bio || "";
+                document.getElementById('followerCount').innerText = data.followers || 0;
+            }
+        }
+
+        async function saveProfile() {
+            const newName = document.getElementById('editName').value;
+            const newBio = document.getElementById('editBio').value;
+            await db.collection('users').doc(currentUser.uid).update({
+                displayName: newName,
+                bio: newBio
+            });
+            alert("Lưu hồ sơ thành công!");
+            toggleProfile();
+            loadUserProfile();
+        }
+
+        // ================= LOGIC CHAT THỜI GIAN THỰC[span_8](start_span)[span_8](end_span) =================
+        function listenToChat(roomId) {
+            const container = document.getElementById("chatMessages");
+            
+            chatUnsubscribe = db.collection("chats")
+                .where("roomId", "==", roomId)
+                .orderBy("timestamp", "asc")
+                .limitToLast(50)
+                .onSnapshot(snapshot => {
+                    container.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const msg = doc.data();
+                        const isMine = msg.senderId === currentUser.uid;
+                        
+                        container.innerHTML += `
+                            <div class="flex flex-col ${isMine ? 'items-end' : 'items-start'}">
+                                <span class="text-[10px] font-bold ${isMine ? 'text-blue-400' : 'text-slate-400'} mb-1 opacity-80 pl-1 pr-1">
+                                    ${msg.senderName || 'Ẩn danh'}
+                                </span>
+                                <div class="text-sm max-w-[85%] ${isMine ? 'chat-bubble-mine shadow-blue-500/20' : 'chat-bubble-other border border-slate-700/50'} shadow-md">
+                                    ${msg.text}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    // Cuộn xuống cuối[span_9](start_span)[span_9](end_span)
+                    setTimeout(() => { container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' }); }, 100);
+                });
+        }
+
+        function handleChatEnter(e) { 
+            if(e.key === 'Enter') sendChatMessage(); 
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById("chatInput");
+            const text = input.value.trim();
+            if(!text || !currentUser) return;
+            
+            input.value = '';
+            
+            // Lấy tên người gửi hiện tại
+            const doc = await db.collection('users').doc(currentUser.uid).get();
+            const senderName = doc.exists ? doc.data().displayName : "Ẩn danh";
+
+            try {
+                await db.collection("chats").add({
+                    roomId: GLOBAL_ROOM_ID,
+                    senderId: currentUser.uid,
+                    senderName: senderName,
+                    text: text,
+                    timestamp: Date.now()
+                });
+                const container = document.getElementById("chatMessages");
+                setTimeout(() => { container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' }); }, 50);
+            } catch(e) { alert("Lỗi gửi tin nhắn"); }
+        }
+    </script>
 </body>
 </html>
