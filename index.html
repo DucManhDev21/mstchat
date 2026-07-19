@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustang Chat</title>
+    <!-- Favicon -->
+    <link rel="icon" href="assets/favicon.png" type="image/png">
+    <!-- File CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-section">
+        <h1>Mustang Chat</h1>
+        <p>Kết nối thời gian thực</p>
+        <button id="login-btn">Đăng nhập bằng Google</button>
+    </div>
+
+    <!-- MÀN HÌNH CHAT (Mặc định ẩn) -->
+    <div id="mustang-chat-app" style="display: none;">
+        
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="user-info">
+                <img id="user-avatar" src="" alt="Avatar">
+                <span id="user-name">Đang tải...</span>
+            </div>
+            
+            <div class="header-actions">
+                <!-- Nút chọn giao diện -->
+                <select id="theme-selector">
+                    <option value="light">☀️ Sáng</option>
+                    <option value="dark">🌙 Tối</option>
+                    <option value="ocean">🌊 Biển</option>
+                    <option value="hacker">💻 Hacker</option>
+                </select>
+                <button id="logout-btn">Đăng xuất</button>
+            </div>
+        </div>
+
+        <!-- Khu vực hiển thị tin nhắn -->
+        <div id="messages-container"></div>
+
+        <!-- Khu vực nhập tin nhắn -->
+        <div class="chat-input-area">
+            <input type="text" id="message-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
+            <button id="send-btn">Gửi</button>
+        </div>
+    </div>
+
+    <!-- Liên kết các file JavaScript (phải có type="module") -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/chat.js"></script>
+</body>
+</html>
