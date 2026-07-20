@@ -1,431 +1,481 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mustang Chat</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustang Chat - Kết nối mọi lúc, mọi nơi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* === TÙY CHỈNH THEME & GLASSMORPHISM === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         :root {
-            /* Light Theme (Mặc định) */
-            --bg-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop');
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: rgba(31, 38, 135, 0.15);
-            --text-color: #1a1a1a;
-            --text-muted: #4a4a4a;
-            --primary-color: #4a90e2;
-            --input-bg: rgba(255, 255, 255, 0.5);
-            
-            /* Chat Bubbles */
-            --msg-sent-bg: rgba(74, 144, 226, 0.85);
-            --msg-sent-text: #fff;
-            --msg-recv-bg: rgba(255, 255, 255, 0.65);
-            --msg-recv-text: #1a1a1a;
-            
-            --online-color: #2ecc71;
+            --bg-color: #0f172a;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
         }
 
-        [data-theme="dark"] {
-            /* Dark Theme */
-            --bg-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop');
-            --glass-bg: rgba(16, 18, 27, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: rgba(0, 0, 0, 0.5);
-            --text-color: #f0f0f0;
-            --text-muted: #aaaaaa;
-            --primary-color: #5facff;
-            --input-bg: rgba(0, 0, 0, 0.3);
-            
-            /* Chat Bubbles */
-            --msg-sent-bg: rgba(95, 172, 255, 0.85);
-            --msg-sent-text: #fff;
-            --msg-recv-bg: rgba(40, 42, 54, 0.7);
-            --msg-recv-text: #f0f0f0;
+        body[data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #2563eb;
         }
 
-        [data-theme="sunset"] {
-            /* Sunset / Pink-Orange Theme */
-            --bg-image: url('https://images.unsplash.com/photo-1617042375876-a13e36732a30?q=80&w=2000&auto=format&fit=crop');
-            --glass-bg: rgba(255, 200, 200, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: rgba(255, 100, 100, 0.2);
-            --text-color: #2d1b2e;
-            --text-muted: #5e3b5e;
-            --primary-color: #ff7e5f;
-            --input-bg: rgba(255, 255, 255, 0.4);
-            
-            /* Chat Bubbles */
-            --msg-sent-bg: rgba(255, 126, 95, 0.85);
-            --msg-sent-text: #fff;
-            --msg-recv-bg: rgba(255, 255, 255, 0.7);
-            --msg-recv-text: #2d1b2e;
+        body[data-theme="ocean"] {
+            --bg-color: #0c4a6e;
+            --glass-bg: rgba(12, 74, 110, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f0f9ff;
+            --text-muted: #bae6fd;
+            --accent: #0ea5e9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body[data-theme="forest"] {
+            --bg-color: #14532d;
+            --glass-bg: rgba(20, 83, 45, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f0fdf4;
+            --text-muted: #bbf7d0;
+            --accent: #22c55e;
+        }
 
-        /* Sửa chiều cao thành 100dvh để khắc phục lỗi ẩn thanh chat trên điện thoại */
+        body[data-theme="love"] {
+            --bg-color: #881337;
+            --glass-bg: rgba(136, 19, 55, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #fff1f2;
+            --text-muted: #fecdd3;
+            --accent: #f43f5e;
+        }
+
         body {
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text-color);
-            transition: background-image 0.5s ease;
-            overflow: hidden;
-            height: 100dvh; 
-            width: 100vw;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
         }
 
-        /* Tiện ích Glassmorphism */
+        /* Glassmorphism Classes */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 var(--glass-shadow);
         }
 
-        .hidden { display: none !important; }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        .btn-primary { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary-color); color: var(--text-color); }
-
-        .input-field {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            background-color: var(--input-bg);
-            color: var(--text-color);
+            color: var(--text-main);
+        }
+        
+        body[data-theme="light"] .glass-input {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-input:focus {
             outline: none;
-            backdrop-filter: blur(5px);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
-        .input-field::placeholder { color: var(--text-muted); }
 
-        /* === 1. LANDING PAGE === */
-        #landing-page { height: 100dvh; display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
-        .hero {
-            min-height: 100dvh; width: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            padding: 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
-            color: white;
+        /* Scroll Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
-        .hero h1 { font-size: 4.5rem; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
-        .hero p { font-size: 1.2rem; margin-bottom: 40px; text-shadow: 1px 1px 5px rgba(0,0,0,0.3); max-width: 600px; }
-        
-        .info-section { padding: 80px 20px; max-width: 900px; text-align: center; margin: 40px auto; border-radius: 20px; }
-        
-        .reveal { opacity: 0; transform: translateY(80px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* === 2. AUTH PAGE === */
-        #auth-page { height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .auth-container { width: 100%; max-width: 420px; padding: 40px 30px; border-radius: 24px; text-align: center; }
-        .google-btn { background-color: rgba(219, 68, 55, 0.9); color: white; width: 100%; margin-top: 15px; }
-        .auth-switch { margin-top: 20px; color: var(--text-color); cursor: pointer; font-weight: 500; text-decoration: underline; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.5);
+        }
 
-        /* === 3. PROFILE SETUP === */
-        #profile-setup-page { height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .setup-container { width: 100%; max-width: 500px; padding: 40px 30px; border-radius: 24px; text-align: center; }
-        .cover-photo-preview { width: 100%; height: 140px; border-radius: 15px; margin-bottom: -60px; object-fit: cover; cursor: pointer; border: 2px solid var(--glass-border); }
-        .avatar-preview { width: 110px; height: 110px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.5); margin: 0 auto 20px; display: block; object-fit: cover; cursor: pointer; background: var(--input-bg); transition: 0.3s; }
-        .avatar-preview:hover { filter: brightness(0.8); }
+        /* Dynamic Background Patterns based on theme */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background-image: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.05), transparent 25%), 
+                              radial-gradient(circle at 85% 30%, rgba(255,255,255,0.05), transparent 25%);
+            pointer-events: none;
+        }
 
-        /* === 4. MAIN APP === */
-        #main-app { display: flex; height: 100dvh; width: 100vw; overflow: hidden; position: relative; padding: 15px; gap: 15px; }
-        
-        /* Sidebar */
-        .sidebar { width: 320px; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s ease; height: 100%; }
-        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); }
-        .sidebar-header h2 { font-weight: 700; background: linear-gradient(45deg, var(--primary-color), #8e44ad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .sidebar-actions { display: flex; gap: 10px; }
-        .sidebar-actions i { font-size: 1.2rem; color: var(--primary-color); cursor: pointer; transition: 0.2s; }
-        .sidebar-actions i:hover { transform: scale(1.1); }
-        
-        .search-bar { padding: 15px; }
-        .search-input-wrapper { position: relative; display: flex; align-items: center; }
-        .search-input-wrapper i { position: absolute; left: 15px; color: var(--text-muted); }
-        .search-input-wrapper input { padding-left: 40px; margin: 0; border-radius: 20px; }
-        
-        .chat-list { flex: 1; overflow-y: auto; padding: 0 10px; display: flex; flex-direction: column; gap: 5px; }
-        .chat-list::-webkit-scrollbar { width: 6px; }
-        .chat-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
-        
-        .empty-chat-msg { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.9rem; }
-        
-        .chat-item { display: flex; align-items: center; padding: 12px 15px; border-radius: 15px; cursor: pointer; transition: background 0.2s; }
-        .chat-item:hover { background: var(--input-bg); }
-        .chat-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; position: relative; background-size: cover; background-position: center; border: 2px solid var(--glass-border); }
-        .online-dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background-color: var(--online-color); border-radius: 50%; border: 2px solid #fff; }
-
-        /* Chat Area */
-        .chat-area { flex: 1; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; height: 100%; position: relative; }
-        .chat-header { padding: 15px 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); }
-        .mobile-menu-btn { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
-        .header-profile-info { display: flex; align-items: center; cursor: pointer; }
-        
-        /* Messages Box */
-        .messages-container { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 70%; padding: 12px 18px; border-radius: 20px; line-height: 1.5; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(4px); word-wrap: break-word; }
-        .message.sent { align-self: flex-end; background: var(--msg-sent-bg); color: var(--msg-sent-text); border-bottom-right-radius: 4px; }
-        .message.received { align-self: flex-start; background: var(--msg-recv-bg); color: var(--msg-recv-text); border-bottom-left-radius: 4px; }
-        .message img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-        
-        .typing-indicator { font-size: 0.85rem; color: var(--text-muted); font-style: italic; align-self: flex-start; margin-top: -5px; padding-left: 10px; }
-
-        /* Chat Input - Responsive & Fixed Bottom */
-        .chat-input-area { padding: 15px 25px; border-top: 1px solid var(--glass-border); display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); width: 100%; }
-        .action-icons { display: flex; gap: 15px; color: var(--primary-color); font-size: 1.25rem; cursor: pointer; align-items: center; }
-        .action-icons i { transition: 0.2s; }
-        .action-icons i:hover { transform: scale(1.1); filter: brightness(1.2); }
-        
-        .chat-input-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
-        .chat-input { width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-color); outline: none; transition: 0.3s; }
-        .chat-input:focus { box-shadow: 0 0 0 2px var(--primary-color); }
-        .send-btn { background: var(--primary-color); border: none; width: 45px; height: 45px; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3); flex-shrink: 0; }
-        .send-btn:hover { transform: scale(1.05); }
-
-        /* === 5. USER PROFILE MODAL === */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .profile-card { width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden; text-align: center; position: relative; }
-        .profile-card .cover { width: 100%; height: 160px; object-fit: cover; }
-        .profile-card .avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.3); margin-top: -55px; object-fit: cover; background: var(--glass-bg); }
-        .profile-info { padding: 25px 20px; }
-        .profile-info h3 { font-size: 1.5rem; margin-bottom: 5px; }
-        .profile-id { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; }
-        .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 25px; }
-        .stats div { display: flex; flex-direction: column; font-weight: 700; font-size: 1.2rem; }
-        .stats span { font-size: 0.85rem; font-weight: 400; color: var(--text-muted); }
-        .profile-actions { display: flex; gap: 12px; justify-content: center; }
-        .profile-actions .btn { flex: 1; padding: 10px; font-size: 0.9rem; }
-        .close-modal { position: absolute; top: 15px; right: 20px; color: white; cursor: pointer; font-size: 1.5rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; transition: 0.2s; }
-        .close-modal:hover { transform: rotate(90deg); }
-
-        /* Default Empty Chat Overlay */
-        .empty-chat-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--glass-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; backdrop-filter: blur(10px); }
-        .empty-chat-overlay i { font-size: 4rem; color: var(--primary-color); margin-bottom: 15px; opacity: 0.7; }
-
-        /* === RESPONSIVE & MOBILE OPTIMIZATION === */
-        @media (max-width: 768px) {
-            #main-app { padding: 0; gap: 0; }
-            .chat-area { border-radius: 0; }
-            
-            /* Sidebar trượt từ trái sang */
-            .sidebar { 
-                position: absolute; 
-                top: 0; left: -100%; 
-                height: 100%; 
-                width: 85%; 
-                max-width: 320px; 
-                z-index: 100; 
-                border-radius: 0; 
-                border-right: 1px solid var(--glass-border);
-            }
-            .sidebar.active { left: 0; }
-            
-            /* Lớp phủ khi mở sidebar */
-            .sidebar-overlay { 
-                display: none; position: absolute; top: 0; left: 0; 
-                width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; 
-            }
-            .sidebar-overlay.active { display: block; }
-            
-            .mobile-menu-btn { display: block; }
-            .hero h1 { font-size: 3rem; }
-            
-            /* Giữ input luôn ở dưới cùng */
-            .chat-input-area { padding: 10px 15px; gap: 8px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
-            .action-icons { gap: 10px; font-size: 1.1rem; }
-            .chat-input { padding: 10px 15px; }
-            .send-btn { width: 40px; height: 40px; }
+        /* Typing indicator animation */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
         }
     </style>
 </head>
-<body>
+<body data-theme="dark" class="min-h-screen relative text-sm md:text-base">
+    <div class="bg-pattern"></div>
 
-    <!-- 1. LANDING PAGE -->
-    <div id="landing-page">
-        <div class="hero">
-            <h1>Mustang Chat</h1>
-            <p>Trải nghiệm nhắn tin mượt mà với giao diện Glassmorphism đỉnh cao. Kết nối không giới hạn.</p>
-            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;" onclick="showScreen('auth-page')">Bắt đầu ngay!</button>
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landing-page" class="absolute inset-0 z-40 overflow-y-auto">
+        <!-- Hero Section -->
+        <div class="min-h-screen flex flex-col items-center justify-center text-center px-4 relative">
+            <div class="glass p-10 md:p-16 rounded-3xl max-w-3xl w-full animate-on-scroll is-visible flex flex-col items-center shadow-2xl">
+                <div class="w-24 h-24 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-2xl mb-6 flex items-center justify-center rotate-12 shadow-lg">
+                    <i class="ph-fill ph-chats-teardrop text-5xl text-white -rotate-12"></i>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Mustang Chat</h1>
+                <p class="text-lg md:text-xl text-[var(--text-muted)] mb-8">Nền tảng trò chuyện thời gian thực hiện đại, mượt mà và bảo mật. Trải nghiệm giao diện Glassmorphism tuyệt đẹp và kết nối với bạn bè ngay hôm nay.</p>
+                <button id="btn-start-now" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-semibold transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-2 text-lg">
+                    Bắt đầu ngay! <i class="ph-bold ph-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="absolute bottom-10 animate-bounce text-[var(--text-muted)]">
+                <p class="mb-2 text-sm">Cuộn để tìm hiểu thêm</p>
+                <i class="ph ph-caret-down text-2xl mx-auto block w-fit"></i>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="min-h-screen flex items-center justify-center py-20 px-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-2xl animate-on-scroll text-center transform transition hover:-translate-y-2">
+                    <i class="ph-duotone ph-rocket-launch text-5xl text-blue-400 mb-4 inline-block"></i>
+                    <h3 class="text-xl font-bold mb-3">Tốc Độ Chớp Nhoáng</h3>
+                    <p class="text-[var(--text-muted)]">Tin nhắn được gửi và nhận ngay lập tức nhờ công nghệ Real-time Database tiên tiến.</p>
+                </div>
+                <div class="glass p-8 rounded-2xl animate-on-scroll text-center transform transition hover:-translate-y-2" style="transition-delay: 100ms;">
+                    <i class="ph-duotone ph-palette text-5xl text-purple-400 mb-4 inline-block"></i>
+                    <h3 class="text-xl font-bold mb-3">Giao Diện Tùy Chỉnh</h3>
+                    <p class="text-[var(--text-muted)]">Thay đổi theme theo sở thích: Dark, Light, Ocean, Forest hay Love với hiệu ứng kính mờ.</p>
+                </div>
+                <div class="glass p-8 rounded-2xl animate-on-scroll text-center transform transition hover:-translate-y-2" style="transition-delay: 200ms;">
+                    <i class="ph-duotone ph-users-three text-5xl text-green-400 mb-4 inline-block"></i>
+                    <h3 class="text-xl font-bold mb-3">Cộng Đồng & Nhóm</h3>
+                    <p class="text-[var(--text-muted)]">Dễ dàng tìm kiếm bạn bè, tạo hồ sơ cá nhân độc đáo và lập nhóm chat trò chuyện.</p>
+                </div>
+            </div>
         </div>
         
-        <div class="info-section glass reveal">
-            <h2><i class="fas fa-bolt" style="color: var(--primary-color);"></i> Tốc độ Thời gian thực</h2>
-            <p style="margin-top: 15px; font-size: 1.1rem; color: var(--text-muted);">Mọi tin nhắn, trạng thái nhập hay hoạt động đều được cập nhật tức thì. Không độ trễ.</p>
-        </div>
-        <div class="info-section glass reveal">
-            <h2><i class="fas fa-share-alt" style="color: var(--primary-color);"></i> Chia sẻ Đa phương tiện</h2>
-            <p style="margin-top: 15px; font-size: 1.1rem; color: var(--text-muted);">Gửi hình ảnh, video, tệp tin và nhãn dán dễ dàng chỉ với một cú chạm. Hỗ trợ tạo nhóm và kết bạn bốn phương.</p>
+        <!-- Footer Info -->
+        <div class="py-20 px-4 text-center">
+            <div class="glass max-w-4xl mx-auto p-10 rounded-3xl animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6">Bạn đã sẵn sàng?</h2>
+                <p class="text-[var(--text-muted)] mb-8 max-w-2xl mx-auto">Hàng ngàn người đang trò chuyện trên Mustang Chat mỗi ngày. Đừng bỏ lỡ cơ hội kết nối với những người bạn mới. Đăng ký hoàn toàn miễn phí!</p>
+                <button id="btn-start-footer" class="px-8 py-3 bg-white text-gray-900 rounded-full font-semibold transition hover:bg-gray-200 shadow-lg">Tham gia ngay</button>
+            </div>
         </div>
     </div>
 
-    <!-- 2. AUTH PAGE -->
-    <div id="auth-page" class="hidden">
-        <div class="auth-container glass reveal">
-            <h2 id="auth-title" style="margin-bottom: 25px; font-size: 2rem;">Đăng nhập</h2>
-            <form id="auth-form">
-                <input type="email" id="auth-email" class="input-field" placeholder="Email" required>
-                <input type="password" id="auth-password" class="input-field" placeholder="Mật khẩu" required>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px; font-size: 1.1rem;" id="auth-submit-btn">Đăng nhập</button>
+    <!-- ==================== AUTH PAGE ==================== -->
+    <div id="auth-page" class="hidden absolute inset-0 z-30 flex items-center justify-center px-4">
+        <div class="glass w-full max-w-md p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2" id="auth-title">Đăng Nhập</h2>
+                <p class="text-[var(--text-muted)] text-sm">Chào mừng bạn đến với Mustang Chat</p>
+            </div>
+
+            <form id="auth-form" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1 pl-1">Email</label>
+                    <div class="relative">
+                        <i class="ph ph-envelope-simple absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" id="auth-email" required class="w-full pl-10 pr-4 py-3 rounded-xl glass-input transition-all" placeholder="name@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 pl-1">Mật khẩu</label>
+                    <div class="relative">
+                        <i class="ph ph-lock-key absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" id="auth-password" required class="w-full pl-10 pr-4 py-3 rounded-xl glass-input transition-all" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full py-3 mt-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold transition shadow-lg flex items-center justify-center gap-2">
+                    Đăng Nhập
+                </button>
             </form>
-            <div style="margin: 20px 0; color: var(--text-muted); font-size: 0.9rem;">HOẶC</div>
-            <button class="btn google-btn" id="google-login-btn"><i class="fab fa-google" style="margin-right: 8px;"></i> Đăng nhập bằng Google</button>
-            <p class="auth-switch" id="toggle-auth">Chưa có tài khoản? Đăng ký ngay</p>
+
+            <div class="my-6 flex items-center text-[var(--text-muted)] text-sm">
+                <div class="flex-1 border-t border-[var(--glass-border)]"></div>
+                <span class="px-3">Hoặc</span>
+                <div class="flex-1 border-t border-[var(--glass-border)]"></div>
+            </div>
+
+            <button id="btn-google-login" class="w-full py-3 glass-input rounded-xl font-medium transition hover:bg-white/5 flex items-center justify-center gap-2 border-[var(--glass-border)]">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" style="color:#4285F4"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" style="color:#34A853"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" style="color:#FBBC05"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" style="color:#EA4335"/></svg>
+                Tiếp tục với Google
+            </button>
+
+            <p class="text-center mt-6 text-sm text-[var(--text-muted)]">
+                <span id="auth-toggle-text">Chưa có tài khoản?</span> 
+                <a href="#" id="auth-toggle-link" class="text-blue-400 hover:underline font-medium">Đăng ký ngay</a>
+            </p>
         </div>
     </div>
 
-    <!-- 3. PROFILE SETUP -->
-    <div id="profile-setup-page" class="hidden">
-        <div class="setup-container glass reveal">
-            <h2 style="margin-bottom: 10px;">Thiết lập Hồ sơ</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">Hoàn thiện thông tin để mọi người nhận ra bạn dễ dàng hơn.</p>
-            
-            <form id="profile-form">
-                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600&auto=format&fit=crop" class="cover-photo-preview" title="Chọn ảnh bìa">
+    <!-- ==================== PROFILE SETUP PAGE ==================== -->
+    <div id="setup-page" class="hidden absolute inset-0 z-20 flex items-center justify-center px-4 overflow-y-auto py-10">
+        <div class="glass w-full max-w-xl p-8 rounded-3xl shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 text-center">Thiết Lập Hồ Sơ</h2>
+            <form id="setup-form" class="space-y-5">
                 
-                <!-- Input ẩn để upload avatar -->
-                <input type="file" id="avatar-upload-input" accept="image/*" class="hidden">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Manh" class="avatar-preview" id="avatar-preview-img" title="Bấm để chọn Avatar">
+                <!-- Covers & Avatar -->
+                <div class="relative h-40 rounded-xl overflow-hidden glass border-dashed border-2 flex items-center justify-center group cursor-pointer" id="cover-upload-container">
+                    <img id="setup-cover-preview" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                    <div class="text-center z-10 p-2 glass rounded-lg group-hover:bg-black/50 transition">
+                        <i class="ph ph-camera text-2xl"></i>
+                        <p class="text-xs mt-1">Tải ảnh bìa</p>
+                    </div>
+                    <input type="file" id="setup-cover-input" accept="image/*" class="hidden">
+                </div>
                 
-                <input type="text" id="setup-name" class="input-field" placeholder="Tên hiển thị (VD: Trần Đức Mạnh)" required>
-                <input type="text" id="setup-id" class="input-field" placeholder="ID người dùng (VD: tducmanh2026)" required>
-                <textarea id="setup-bio" class="input-field" placeholder="Tiểu sử (Bio)..." rows="3" style="resize: none;"></textarea>
+                <div class="flex justify-center -mt-16 relative z-10">
+                    <div class="w-24 h-24 rounded-full border-4 border-[var(--bg-color)] glass overflow-hidden relative group cursor-pointer" id="avatar-upload-container">
+                        <img id="setup-avatar-preview" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mustang" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition">
+                            <i class="ph ph-camera text-xl text-white"></i>
+                        </div>
+                        <input type="file" id="setup-avatar-input" accept="image/*" class="hidden">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium mb-1 pl-1 text-[var(--text-muted)]">Tên hiển thị *</label>
+                        <input type="text" id="setup-name" required class="w-full px-4 py-2.5 rounded-xl glass-input" placeholder="Tên của bạn">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1 pl-1 text-[var(--text-muted)]">ID Người dùng *</label>
+                        <input type="text" id="setup-id" required class="w-full px-4 py-2.5 rounded-xl glass-input" placeholder="@username">
+                    </div>
+                </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px; font-size: 1.1rem;">Lưu hồ sơ & Vào App</button>
+                <div>
+                    <label class="block text-xs font-medium mb-1 pl-1 text-[var(--text-muted)]">Tiểu sử (Bio)</label>
+                    <textarea id="setup-bio" rows="3" class="w-full px-4 py-2.5 rounded-xl glass-input resize-none" placeholder="Giới thiệu một chút về bạn..."></textarea>
+                </div>
+
+                <button type="submit" id="setup-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold transition shadow-lg">
+                    Hoàn Tất & Bắt Đầu Trò Chuyện
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- 4. MAIN APP -->
-    <div id="main-app" class="hidden">
-        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="main-app" class="hidden h-screen w-full flex p-2 md:p-4 gap-2 md:gap-4 overflow-hidden">
         
         <!-- Sidebar -->
-        <div class="sidebar glass" id="sidebar">
-            <div class="sidebar-header">
-                <h2>Mustang</h2>
-                <div class="sidebar-actions">
-                    <i class="fas fa-user-plus" title="Kết bạn mới" onclick="alert('Tính năng kết bạn đang được phát triển!')"></i>
-                    <i class="fas fa-users" title="Tạo Nhóm" onclick="alert('Tính năng tạo nhóm đang được phát triển!')"></i>
-                    <i class="fas fa-palette" id="theme-toggle" title="Đổi giao diện (Light/Dark/Sunset)"></i>
-                    <i class="fas fa-sign-out-alt" id="logout-btn" title="Đăng xuất"></i>
+        <aside class="glass rounded-2xl w-full max-w-sm flex flex-col transition-all" id="app-sidebar">
+            <!-- Header sidebar -->
+            <div class="p-4 border-b border-[var(--glass-border)] flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer" id="my-profile-btn">
+                    <img id="my-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/20">
+                    <div>
+                        <h3 id="my-name" class="font-semibold text-sm line-clamp-1">Người dùng</h3>
+                        <p class="text-xs text-green-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-400"></span> Đang hoạt động</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative group">
+                        <button class="w-8 h-8 rounded-full glass-input flex items-center justify-center hover:bg-white/10 transition">
+                            <i class="ph ph-palette"></i>
+                        </button>
+                        <div class="absolute right-0 top-full mt-2 glass p-2 rounded-xl hidden group-hover:flex flex-col gap-1 w-32 z-50">
+                            <button class="text-left px-3 py-1.5 text-sm hover:bg-white/10 rounded-lg theme-btn" data-theme="dark">Dark</button>
+                            <button class="text-left px-3 py-1.5 text-sm hover:bg-white/10 rounded-lg theme-btn" data-theme="light">Light</button>
+                            <button class="text-left px-3 py-1.5 text-sm hover:bg-white/10 rounded-lg theme-btn" data-theme="ocean">Ocean</button>
+                            <button class="text-left px-3 py-1.5 text-sm hover:bg-white/10 rounded-lg theme-btn" data-theme="forest">Forest</button>
+                            <button class="text-left px-3 py-1.5 text-sm hover:bg-white/10 rounded-lg theme-btn" data-theme="love">Love</button>
+                        </div>
+                    </div>
+                    <button id="btn-logout" class="w-8 h-8 rounded-full glass-input flex items-center justify-center hover:bg-red-500/20 text-red-400 transition" title="Đăng xuất">
+                        <i class="ph ph-sign-out"></i>
+                    </button>
                 </div>
             </div>
-            <div class="search-bar">
-                <div class="search-input-wrapper">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="chat-search-input" class="input-field" placeholder="Tìm kiếm tên..." style="margin: 0;">
-                </div>
-            </div>
-            
-            <!-- Danh sách chat (Không tự động thêm tài khoản, để trống hoặc test logic thêm) -->
-            <div class="chat-list" id="chat-list-container">
-                <div class="empty-chat-msg" id="empty-list-msg">Bạn chưa có cuộc trò chuyện nào. Hãy kết bạn ngay!</div>
+
+            <!-- Search -->
+            <div class="p-4 border-b border-[var(--glass-border)] relative">
+                <i class="ph ph-magnifying-glass absolute left-7 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="search-users-input" class="w-full pl-10 pr-4 py-2 rounded-xl glass-input text-sm" placeholder="Tìm kiếm bạn bè, nhóm...">
                 
-                <!-- Nút Demo để Test UX -->
-                <button class="btn btn-outline" id="demo-add-friend" style="margin: 10px; font-size: 0.8rem;">+ Thêm bạn Demo</button>
-            </div>
-        </div>
-
-        <!-- Chat Area -->
-        <div class="chat-area glass">
-            <!-- Lớp phủ khi chưa chọn chat -->
-            <div class="empty-chat-overlay" id="empty-chat-overlay">
-                <i class="far fa-comments"></i>
-                <h2>Chào mừng đến với Mustang Chat</h2>
-                <p style="color: var(--text-muted);">Chọn một cuộc trò chuyện để bắt đầu</p>
-            </div>
-
-            <div class="chat-header">
-                <div class="header-profile-info">
-                    <i class="fas fa-bars mobile-menu-btn" id="mobile-menu-btn"></i>
-                    <div class="chat-avatar" id="current-chat-avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Demo'); width: 45px; height: 45px; margin-right: 12px;" onclick="openProfileModal('guest')">
-                        <div class="online-dot"></div>
-                    </div>
-                    <div onclick="openProfileModal('guest')">
-                        <h3 id="current-chat-name" style="font-size: 1.1rem;">Người dùng</h3>
-                        <p style="font-size: 0.8rem; color: var(--online-color); font-weight: 500;" id="current-chat-status">Đang hoạt động</p>
-                    </div>
+                <!-- Search Results Dropdown -->
+                <div id="search-results" class="absolute left-4 right-4 top-full mt-1 glass rounded-xl shadow-xl max-h-60 overflow-y-auto hidden z-50 p-2 flex flex-col gap-1">
+                    <!-- Results injected here -->
                 </div>
-                <div class="action-icons">
-                    <i class="fas fa-phone"></i>
-                    <i class="fas fa-video"></i>
-                    <i class="fas fa-info-circle"></i>
+            </div>
+
+            <!-- Chat List -->
+            <div class="flex-1 overflow-y-auto p-2 flex flex-col gap-1" id="chat-list">
+                <div class="text-center p-4 text-[var(--text-muted)] text-sm">
+                    Đang tải cuộc trò chuyện...
                 </div>
             </div>
             
-            <div class="messages-container" id="messages-box">
-                <!-- Tin nhắn sẽ được append vào đây -->
-                <div class="typing-indicator hidden" id="typing-indicator">Người dùng đang nhập...</div>
+            <div class="p-3 border-t border-[var(--glass-border)]">
+                <button id="btn-create-group" class="w-full py-2.5 glass-input rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center justify-center gap-2 border border-dashed">
+                    <i class="ph ph-users-three"></i> Tạo nhóm chat mới
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="glass rounded-2xl flex-1 flex flex-col relative hidden md:flex" id="app-chat-area">
+            
+            <!-- Placeholder when no chat selected -->
+            <div id="chat-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-duotone ph-paper-plane-tilt text-4xl text-blue-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Mustang Chat Web</h3>
+                <p class="text-[var(--text-muted)] max-w-sm">Chọn một cuộc trò chuyện từ danh sách hoặc tìm kiếm bạn bè để bắt đầu nhắn tin.</p>
             </div>
 
-            <!-- Input Chat -->
-            <div class="chat-input-area">
-                <div class="action-icons">
-                    <!-- File inputs ẩn -->
-                    <input type="file" id="media-upload" accept="image/*,video/*" class="hidden">
-                    <input type="file" id="file-upload" class="hidden">
+            <!-- Chat Content -->
+            <div id="active-chat-container" class="w-full h-full flex flex-col hidden">
+                <!-- Chat Header -->
+                <div class="h-16 border-b border-[var(--glass-border)] flex items-center justify-between px-4 shrink-0 bg-black/10 backdrop-blur-md rounded-t-2xl">
+                    <div class="flex items-center gap-3 cursor-pointer" id="active-chat-profile">
+                        <button class="md:hidden w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10" id="btn-back-sidebar">
+                            <i class="ph ph-caret-left text-xl"></i>
+                        </button>
+                        <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <h3 id="active-chat-name" class="font-semibold text-sm">...</h3>
+                            <p id="active-chat-status" class="text-xs text-[var(--text-muted)]">...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-white/10 transition"><i class="ph ph-phone text-lg"></i></button>
+                        <button class="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-white/10 transition"><i class="ph ph-video-camera text-lg"></i></button>
+                        <button class="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-white/10 transition"><i class="ph ph-info text-lg"></i></button>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4" id="messages-container">
+                    <!-- Messages injected here -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-3 border-t border-[var(--glass-border)] bg-black/10 backdrop-blur-md rounded-b-2xl">
+                    <form id="form-send-message" class="flex items-end gap-2">
+                        <div class="flex items-center gap-1">
+                            <label class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/10 transition cursor-pointer text-blue-400">
+                                <i class="ph ph-image text-xl"></i>
+                                <input type="file" id="input-image" accept="image/*" class="hidden">
+                            </label>
+                            <button type="button" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/10 transition text-purple-400">
+                                <i class="ph ph-sticker text-xl"></i>
+                            </button>
+                            <label class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/10 transition cursor-pointer text-green-400">
+                                <i class="ph ph-paperclip text-xl"></i>
+                                <input type="file" id="input-file" class="hidden">
+                            </label>
+                        </div>
+                        
+                        <div class="flex-1 bg-white/5 rounded-2xl border border-[var(--glass-border)] px-4 py-1 flex items-center min-h-[44px]">
+                            <textarea id="input-message" rows="1" class="w-full bg-transparent border-none focus:outline-none resize-none py-2 text-sm max-h-32" placeholder="Nhập tin nhắn..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition shadow-lg shrink-0">
+                            <i class="ph-fill ph-paper-plane-right text-xl"></i>
+                        </button>
+                    </form>
                     
-                    <i class="fas fa-image" title="Gửi ảnh/video" onclick="document.getElementById('media-upload').click()"></i>
-                    <i class="fas fa-microphone" title="Ghi âm" onclick="alert('Bắt đầu ghi âm...')"></i>
-                    <i class="fas fa-sticky-note" title="Nhãn dán" onclick="alert('Mở kho nhãn dán...')"></i>
+                    <!-- Attachment Preview -->
+                    <div id="attachment-preview" class="hidden mt-2 p-2 glass rounded-lg inline-flex items-center gap-3 relative">
+                        <img id="preview-img" src="" class="h-12 w-12 object-cover rounded">
+                        <div class="text-xs">
+                            <p id="preview-name" class="font-medium truncate max-w-[150px]">image.png</p>
+                            <p class="text-[var(--text-muted)]">Sẵn sàng gửi</p>
+                        </div>
+                        <button type="button" id="btn-remove-attachment" class="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-white"><i class="ph ph-x text-xs"></i></button>
+                    </div>
                 </div>
-                <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="message-input" placeholder="Nhập tin nhắn...">
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== USER PROFILE MODAL ==================== -->
+    <div id="modal-user-profile" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm">
+        <div class="glass w-full max-w-sm rounded-3xl overflow-hidden relative shadow-2xl transform transition-all scale-95 opacity-0" id="modal-user-content">
+            <button class="absolute top-4 right-4 w-8 h-8 bg-black/30 rounded-full flex items-center justify-center text-white hover:bg-black/50 z-10" onclick="closeUserProfile()">
+                <i class="ph ph-x"></i>
+            </button>
+            
+            <div class="h-32 bg-gray-700 w-full relative">
+                <img id="modal-cover" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            
+            <div class="px-6 pb-6 pt-0 relative flex flex-col items-center text-center">
+                <img id="modal-avatar" src="" class="w-24 h-24 rounded-full border-4 border-[var(--bg-color)] object-cover -mt-12 mb-3 relative z-10">
+                <h3 id="modal-name" class="text-xl font-bold">...</h3>
+                <p id="modal-id" class="text-sm text-[var(--text-muted)] mb-2">@...</p>
+                <p id="modal-bio" class="text-sm mb-4 text-gray-200">...</p>
+                
+                <div class="flex items-center gap-6 mb-6">
+                    <div class="text-center">
+                        <p class="text-lg font-bold" id="modal-followers">0</p>
+                        <p class="text-xs text-[var(--text-muted)]">Người theo dõi</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-lg font-bold" id="modal-following">0</p>
+                        <p class="text-xs text-[var(--text-muted)]">Đang theo dõi</p>
+                    </div>
                 </div>
-                <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+
+                <div class="w-full flex gap-3">
+                    <button id="modal-btn-follow" class="flex-1 py-2.5 glass-input hover:bg-white/10 rounded-xl font-medium transition flex items-center justify-center gap-2">
+                        <i class="ph ph-user-plus"></i> Theo dõi
+                    </button>
+                    <button id="modal-btn-message" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-chat-teardrop"></i> Nhắn tin
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 5. USER PROFILE MODAL -->
-    <div id="user-profile-modal" class="modal-overlay hidden">
-        <div class="profile-card glass">
-            <i class="fas fa-times close-modal" onclick="closeProfileModal()"></i>
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600" class="cover" id="modal-cover">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Demo" class="avatar" id="modal-avatar">
-            <div class="profile-info">
-                <h3 id="modal-name">Người dùng</h3>
-                <p class="profile-id" id="modal-id">@username</p>
-                <p style="margin-bottom: 20px; font-size: 0.95rem;" id="modal-bio">Tiểu sử trống.</p>
-                <div class="stats">
-                    <div><span id="modal-followers" style="color: var(--text-color); font-size: 1.2rem;">0</span> <br><span>Người theo dõi</span></div>
-                    <div><span id="modal-following" style="color: var(--text-color); font-size: 1.2rem;">0</span> <br><span>Đang theo dõi</span></div>
-                </div>
-                <div class="profile-actions">
-                    <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Theo dõi</button>
-                    <button class="btn btn-outline" onclick="closeProfileModal()"><i class="fas fa-comment"></i> Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- SCRIPT (UI Logic & Firebase Module) -->
+    <!-- ==================== SCRIPTS ==================== -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
-               from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } 
-               from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, onSnapshot, query, where, orderBy, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
+        // === FIREBASE CONFIG (Dùng config được cung cấp) ===
         const firebaseConfig = {
             apiKey: "AIzaSyAIkcg_JzSCWORJt4EKm0gG4XOCcz8a7UI",
             authDomain: "mstchat-f967d.firebaseapp.com",
@@ -437,293 +487,703 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        // --- UI NAVIGATION ---
-        window.showScreen = (screenId) => {
-            document.querySelectorAll('body > div').forEach(div => div.classList.add('hidden'));
-            const target = document.getElementById(screenId);
-            target.classList.remove('hidden');
-            const reveals = target.querySelectorAll('.reveal');
-            reveals.forEach(el => {
-                el.classList.remove('active');
-                setTimeout(() => el.classList.add('active'), 50);
-            });
+        // === GLOBAL STATE ===
+        let currentUser = null;
+        let userProfileData = null;
+        let allUsers = [];
+        let myChats = [];
+        let currentActiveChat = null; // { id, type, user/group }
+        let unsubscribeMessages = null;
+        let unsubscribeChats = null;
+
+        // === DOM ELEMENTS ===
+        const DOM = {
+            pages: {
+                landing: document.getElementById('landing-page'),
+                auth: document.getElementById('auth-page'),
+                setup: document.getElementById('setup-page'),
+                app: document.getElementById('main-app')
+            },
+            auth: {
+                form: document.getElementById('auth-form'),
+                email: document.getElementById('auth-email'),
+                password: document.getElementById('auth-password'),
+                toggleLink: document.getElementById('auth-toggle-link'),
+                toggleText: document.getElementById('auth-toggle-text'),
+                title: document.getElementById('auth-title'),
+                submitBtn: document.getElementById('auth-submit-btn'),
+                googleBtn: document.getElementById('btn-google-login')
+            },
+            setup: {
+                form: document.getElementById('setup-form'),
+                name: document.getElementById('setup-name'),
+                id: document.getElementById('setup-id'),
+                bio: document.getElementById('setup-bio'),
+                avatarInput: document.getElementById('setup-avatar-input'),
+                avatarPreview: document.getElementById('setup-avatar-preview'),
+                coverInput: document.getElementById('setup-cover-input'),
+                coverPreview: document.getElementById('setup-cover-preview')
+            },
+            app: {
+                myName: document.getElementById('my-name'),
+                myAvatar: document.getElementById('my-avatar'),
+                btnLogout: document.getElementById('btn-logout'),
+                searchUsers: document.getElementById('search-users-input'),
+                searchResults: document.getElementById('search-results'),
+                chatList: document.getElementById('chat-list'),
+                
+                chatArea: document.getElementById('app-chat-area'),
+                sidebar: document.getElementById('app-sidebar'),
+                chatPlaceholder: document.getElementById('chat-placeholder'),
+                activeChatContainer: document.getElementById('active-chat-container'),
+                
+                activeChatName: document.getElementById('active-chat-name'),
+                activeChatAvatar: document.getElementById('active-chat-avatar'),
+                activeChatStatus: document.getElementById('active-chat-status'),
+                
+                messagesContainer: document.getElementById('messages-container'),
+                formSendMessage: document.getElementById('form-send-message'),
+                inputMessage: document.getElementById('input-message'),
+                inputImage: document.getElementById('input-image'),
+                inputFile: document.getElementById('input-file'),
+                btnBackSidebar: document.getElementById('btn-back-sidebar'),
+                
+                attachmentPreview: document.getElementById('attachment-preview'),
+                previewImg: document.getElementById('preview-img'),
+                previewName: document.getElementById('preview-name'),
+                btnRemoveAttachment: document.getElementById('btn-remove-attachment')
+            },
+            modal: {
+                wrapper: document.getElementById('modal-user-profile'),
+                content: document.getElementById('modal-user-content'),
+                cover: document.getElementById('modal-cover'),
+                avatar: document.getElementById('modal-avatar'),
+                name: document.getElementById('modal-name'),
+                id: document.getElementById('modal-id'),
+                bio: document.getElementById('modal-bio'),
+                followers: document.getElementById('modal-followers'),
+                following: document.getElementById('modal-following'),
+                btnFollow: document.getElementById('modal-btn-follow'),
+                btnMessage: document.getElementById('modal-btn-message')
+            }
         };
 
-        const handleScrollReveal = () => {
-            let windowHeight = window.innerHeight;
-            document.querySelectorAll(".reveal:not(.active)").forEach(reveal => {
-                let elementTop = reveal.getBoundingClientRect().top;
-                if (elementTop < windowHeight - 80) {
-                    reveal.classList.add("active");
-                }
+        let isLoginMode = true;
+        let selectedAttachment = null; // { file, type, url }
+
+        // === UTILITIES ===
+        const showToast = (message, type = 'info') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bg = type === 'error' ? 'bg-red-500' : (type === 'success' ? 'bg-green-500' : 'bg-blue-500');
+            toast.className = `${bg} text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transform transition-all duration-300 translate-x-full opacity-0 max-w-sm`;
+            
+            const icon = type === 'error' ? 'ph-warning-circle' : (type === 'success' ? 'ph-check-circle' : 'ph-info');
+            toast.innerHTML = `<i class="ph ${icon} text-lg"></i> <span class="text-sm">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
             });
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         };
-        document.getElementById('landing-page').addEventListener("scroll", handleScrollReveal);
-        setTimeout(handleScrollReveal, 100);
 
-        // --- RESPONSIVE SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const switchPage = (pageName) => {
+            Object.values(DOM.pages).forEach(page => page.classList.add('hidden'));
+            DOM.pages[pageName].classList.remove('hidden');
+        };
 
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            overlay.classList.add('active');
+        // Custom base64 image converter for small avatars if storage has cors/rules issue
+        const fileToBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
+        // Format time
+        const formatTime = (dateObj) => {
+            if(!dateObj) return '';
+            const d = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+            return d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+        };
+
+        // Scroll Animations for Landing Page
+        const setupScrollAnimations = () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        };
+
+        // === EVENT LISTENERS: LANDING & THEME ===
+        document.getElementById('btn-start-now').addEventListener('click', () => switchPage('auth'));
+        document.getElementById('btn-start-footer').addEventListener('click', () => switchPage('auth'));
+
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const theme = e.target.getAttribute('data-theme');
+                document.body.setAttribute('data-theme', theme);
+                showToast(`Đã đổi giao diện: ${theme}`, 'success');
+            });
         });
 
-        // --- THEME TOGGLE (Light -> Dark -> Sunset) ---
-        const themes = [null, 'dark', 'sunset'];
-        let currentThemeIndex = 0;
-        const themeToggle = document.getElementById('theme-toggle');
-        
-        themeToggle.addEventListener('click', () => {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            const newTheme = themes[currentThemeIndex];
-            
-            if (newTheme) {
-                document.body.setAttribute('data-theme', newTheme);
-            } else {
-                document.body.removeAttribute('data-theme');
-            }
-            
-            // Đổi icon
-            if(newTheme === 'dark') themeToggle.className = 'fas fa-moon';
-            else if(newTheme === 'sunset') themeToggle.className = 'fas fa-sun';
-            else themeToggle.className = 'fas fa-palette';
-        });
-
-        // --- AVATAR UPLOAD PREVIEW ---
-        const avatarInput = document.getElementById('avatar-upload-input');
-        const avatarPreviewImg = document.getElementById('avatar-preview-img');
-        
-        avatarPreviewImg.addEventListener('click', () => avatarInput.click());
-        
-        avatarInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    avatarPreviewImg.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // --- AUTHENTICATION ---
-        let isLogin = true;
-        const toggleAuthBtn = document.getElementById('toggle-auth');
-        const authTitle = document.getElementById('auth-title');
-        const authSubmitBtn = document.getElementById('auth-submit-btn');
-
-        toggleAuthBtn.addEventListener('click', () => {
-            isLogin = !isLogin;
-            authTitle.innerText = isLogin ? "Đăng nhập" : "Đăng ký";
-            authSubmitBtn.innerText = isLogin ? "Đăng nhập" : "Đăng ký";
-            toggleAuthBtn.innerText = isLogin ? "Chưa có tài khoản? Đăng ký ngay" : "Đã có tài khoản? Đăng nhập";
-        });
-
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+        // === AUTH LOGIC ===
+        DOM.auth.toggleLink.addEventListener('click', (e) => {
             e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
+            isLoginMode = !isLoginMode;
+            DOM.auth.title.innerText = isLoginMode ? 'Đăng Nhập' : 'Đăng Ký';
+            DOM.auth.submitBtn.innerHTML = isLoginMode ? 'Đăng Nhập' : 'Tạo Tài Khoản';
+            DOM.auth.toggleText.innerText = isLoginMode ? 'Chưa có tài khoản?' : 'Đã có tài khoản?';
+            DOM.auth.toggleLink.innerText = isLoginMode ? 'Đăng ký ngay' : 'Đăng nhập ngay';
+        });
+
+        DOM.auth.form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = DOM.auth.email.value;
+            const password = DOM.auth.password.value;
+            const originalText = DOM.auth.submitBtn.innerHTML;
+            DOM.auth.submitBtn.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Đang xử lý...';
+            DOM.auth.submitBtn.disabled = true;
+
             try {
-                if (isLogin) {
+                if (isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
                 }
             } catch (error) {
-                alert("Lỗi: " + error.message);
+                showToast(error.message, 'error');
+            } finally {
+                DOM.auth.submitBtn.innerHTML = originalText;
+                DOM.auth.submitBtn.disabled = false;
             }
         });
 
-        document.getElementById('google-login-btn').addEventListener('click', async () => {
+        DOM.auth.googleBtn.addEventListener('click', async () => {
             const provider = new GoogleAuthProvider();
             try {
                 await signInWithPopup(auth, provider);
             } catch (error) {
-                alert("Lỗi đăng nhập Google: " + error.message);
+                showToast(error.message, 'error');
             }
         });
 
-        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        DOM.app.btnLogout.addEventListener('click', async () => {
+            if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                // Clear UI Data
+                DOM.app.chatList.innerHTML = '';
+                DOM.app.messagesContainer.innerHTML = '';
+                currentActiveChat = null;
+                DOM.app.activeChatContainer.classList.add('hidden');
+                DOM.app.chatPlaceholder.classList.remove('hidden');
+                
+                if(unsubscribeChats) unsubscribeChats();
+                if(unsubscribeMessages) unsubscribeMessages();
+                
+                await signOut(auth);
+            }
+        });
 
-        // --- AUTH STATE & PROFILE ---
+        // Auth State Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    window.showScreen('main-app');
-                    initMainAppLogic();
+                currentUser = user;
+                // Check if user has completed profile setup
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    userProfileData = userDoc.data();
+                    
+                    // Update Online Status
+                    await updateDoc(doc(db, "users", user.uid), { status: 'online', lastActive: serverTimestamp() });
+                    
+                    initApp();
                 } else {
-                    window.showScreen('profile-setup-page');
+                    switchPage('setup');
+                    if(user.displayName) DOM.setup.name.value = user.displayName;
+                    if(user.photoURL) DOM.setup.avatarPreview.src = user.photoURL;
                 }
             } else {
-                if(!document.getElementById('main-app').classList.contains('hidden')) {
-                    window.showScreen('landing-page');
-                }
+                currentUser = null;
+                userProfileData = null;
+                switchPage('landing');
             }
         });
 
-        document.getElementById('profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const user = auth.currentUser;
-            if(!user) return;
+        // === SETUP LOGIC ===
+        let avatarBase64 = null;
+        let coverBase64 = null;
 
-            const profileData = {
-                uid: user.uid,
-                email: user.email,
-                name: document.getElementById('setup-name').value,
-                displayId: document.getElementById('setup-id').value,
-                bio: document.getElementById('setup-bio').value,
-                avatarUrl: avatarPreviewImg.src, // Lưu ảnh dạng base64 hoặc URL
-                coverUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600',
-                followers: 0,
-                following: 0,
-                isOnline: true
+        DOM.setup.avatarInput.addEventListener('change', async (e) => {
+            if(e.target.files[0]) {
+                avatarBase64 = await fileToBase64(e.target.files[0]);
+                DOM.setup.avatarPreview.src = avatarBase64;
+            }
+        });
+        
+        DOM.setup.coverInput.addEventListener('change', async (e) => {
+            if(e.target.files[0]) {
+                coverBase64 = await fileToBase64(e.target.files[0]);
+                DOM.setup.coverPreview.src = coverBase64;
+                DOM.setup.coverPreview.classList.remove('hidden');
+            }
+        });
+
+        DOM.setup.form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('setup-submit-btn');
+            submitBtn.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Đang lưu...';
+            submitBtn.disabled = true;
+
+            const name = DOM.setup.name.value.trim();
+            const username = DOM.setup.id.value.trim().replace('@', '');
+            const bio = DOM.setup.bio.value.trim();
+            
+            // Note: To avoid storage rules issue on unverified firebase config, 
+            // saving small avatar/cover as base64 or fallback URL.
+            const finalAvatar = avatarBase64 || currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
+            const finalCover = coverBase64 || `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80`;
+
+            const userData = {
+                uid: currentUser.uid,
+                name: name,
+                username: username,
+                bio: bio,
+                avatar: finalAvatar,
+                cover: finalCover,
+                email: currentUser.email,
+                followers: [],
+                following: [],
+                status: 'online',
+                createdAt: serverTimestamp()
             };
 
             try {
-                await setDoc(doc(db, "users", user.uid), profileData);
-                window.showScreen('main-app');
-                initMainAppLogic();
-            } catch (error) {
-                alert("Lỗi lưu hồ sơ: " + error.message);
+                await setDoc(doc(db, "users", currentUser.uid), userData);
+                userProfileData = userData;
+                showToast("Thiết lập hồ sơ thành công!", "success");
+                initApp();
+            } catch (err) {
+                showToast("Lỗi: " + err.message, "error");
+            } finally {
+                submitBtn.innerHTML = 'Hoàn Tất & Bắt Đầu Trò Chuyện';
+                submitBtn.disabled = false;
             }
         });
 
-        // --- MAIN APP LOGIC (Chat, Search, Media) ---
-        function initMainAppLogic() {
-            const msgInput = document.getElementById('message-input');
-            const typingIndicator = document.getElementById('typing-indicator');
-            const msgBox = document.getElementById('messages-box');
-            const searchInput = document.getElementById('chat-search-input');
-            const mediaUpload = document.getElementById('media-upload');
+        // === APP INIT & REALTIME ===
+        const initApp = () => {
+            switchPage('app');
             
-            // Xử lý Gửi Ảnh/Video
-            mediaUpload.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if(file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const div = document.createElement('div');
-                        div.className = 'message sent';
-                        div.innerHTML = `<img src="${e.target.result}" alt="sent media">`;
-                        typingIndicator.before(div);
-                        msgBox.scrollTop = msgBox.scrollHeight;
+            // Set my info
+            DOM.app.myName.innerText = userProfileData.name;
+            DOM.app.myAvatar.src = userProfileData.avatar;
+
+            // Load All Users for Search (Simple query)
+            loadAllUsers();
+
+            // Load My Chats
+            listenMyChats();
+            
+            // Set disconnect hook (simulate offline)
+            window.addEventListener('beforeunload', () => {
+                if(currentUser) {
+                    updateDoc(doc(db, "users", currentUser.uid), { status: 'offline', lastActive: new Date() });
+                }
+            });
+        };
+
+        const loadAllUsers = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                allUsers = [];
+                querySnapshot.forEach((doc) => {
+                    if(doc.id !== currentUser.uid) {
+                        allUsers.push(doc.data());
                     }
-                    reader.readAsDataURL(file);
-                    mediaUpload.value = ''; // Reset
-                }
-            });
+                });
+            } catch (err) {
+                console.error("Error loading users", err);
+            }
+        };
 
-            // Xử lý trạng thái đang nhập
-            let typingTimer;
-            msgInput.addEventListener('input', () => {
-                if(msgInput.value.trim().length > 0) {
-                    document.getElementById('current-chat-status').innerText = "Đang gõ...";
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(() => {
-                        document.getElementById('current-chat-status').innerText = "Đang hoạt động";
-                    }, 1000);
-                }
-            });
-
-            // Gửi tin nhắn Text
-            const sendMessage = () => {
-                const text = msgInput.value;
-                if(text.trim()) {
+        // Search Users function
+        DOM.app.searchUsers.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            const resContainer = DOM.app.searchResults;
+            if(!val) {
+                resContainer.classList.add('hidden');
+                return;
+            }
+            
+            const filtered = allUsers.filter(u => u.name.toLowerCase().includes(val) || u.username.toLowerCase().includes(val));
+            
+            resContainer.innerHTML = '';
+            if(filtered.length === 0) {
+                resContainer.innerHTML = '<p class="text-xs text-center text-gray-400 p-2">Không tìm thấy ai</p>';
+            } else {
+                filtered.forEach(u => {
                     const div = document.createElement('div');
-                    div.className = 'message sent';
-                    div.innerText = text;
-                    typingIndicator.before(div);
-                    msgInput.value = '';
-                    msgBox.scrollTop = msgBox.scrollHeight;
-                    document.getElementById('current-chat-status').innerText = "Đang hoạt động";
-                    
-                    // Giả lập tin nhắn phản hồi
-                    setTimeout(() => {
-                        typingIndicator.classList.remove('hidden');
-                        msgBox.scrollTop = msgBox.scrollHeight;
-                        setTimeout(() => {
-                            const reply = document.createElement('div');
-                            reply.className = 'message received';
-                            reply.innerText = "Tuyệt vời! Tính năng đã hoạt động mượt mà.";
-                            typingIndicator.before(reply);
-                            typingIndicator.classList.add('hidden');
-                            msgBox.scrollTop = msgBox.scrollHeight;
-                        }, 1500);
-                    }, 500);
-                }
+                    div.className = 'flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer transition';
+                    div.innerHTML = `
+                        <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">${u.name}</p>
+                            <p class="text-xs text-[var(--text-muted)] truncate">@${u.username}</p>
+                        </div>
+                    `;
+                    div.onclick = () => openUserProfile(u);
+                    resContainer.appendChild(div);
+                });
+            }
+            resContainer.classList.remove('hidden');
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('#search-users-input') && !e.target.closest('#search-results')) {
+                DOM.app.searchResults.classList.add('hidden');
+            }
+        });
+
+        // User Profile Modal Logic
+        let modalSelectedUser = null;
+        window.openUserProfile = (user) => {
+            modalSelectedUser = user;
+            DOM.modal.cover.src = user.cover || '';
+            DOM.modal.avatar.src = user.avatar || '';
+            DOM.modal.name.innerText = user.name;
+            DOM.modal.id.innerText = '@' + user.username;
+            DOM.modal.bio.innerText = user.bio || 'Chưa có tiểu sử';
+            DOM.modal.followers.innerText = user.followers?.length || 0;
+            DOM.modal.following.innerText = user.following?.length || 0;
+            
+            const isFollowing = userProfileData.following?.includes(user.uid);
+            DOM.modal.btnFollow.innerHTML = isFollowing 
+                ? '<i class="ph ph-user-minus"></i> Hủy theo dõi' 
+                : '<i class="ph ph-user-plus"></i> Theo dõi';
+            DOM.modal.btnFollow.className = isFollowing
+                ? 'flex-1 py-2.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-xl font-medium transition flex items-center justify-center gap-2'
+                : 'flex-1 py-2.5 glass-input hover:bg-white/10 rounded-xl font-medium transition flex items-center justify-center gap-2';
+
+            DOM.modal.wrapper.classList.remove('hidden');
+            setTimeout(() => {
+                DOM.modal.content.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+            DOM.app.searchResults.classList.add('hidden');
+        };
+
+        window.closeUserProfile = () => {
+            DOM.modal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                DOM.modal.wrapper.classList.add('hidden');
+                modalSelectedUser = null;
+            }, 300);
+        };
+
+        DOM.modal.btnMessage.addEventListener('click', () => {
+            closeUserProfile();
+            startChatWith(modalSelectedUser);
+        });
+
+        DOM.modal.btnFollow.addEventListener('click', async () => {
+            if(!modalSelectedUser) return;
+            const targetUid = modalSelectedUser.uid;
+            const myUid = currentUser.uid;
+            
+            let myFollowing = userProfileData.following || [];
+            let targetFollowers = modalSelectedUser.followers || [];
+            
+            const isFollowing = myFollowing.includes(targetUid);
+            
+            if(isFollowing) {
+                myFollowing = myFollowing.filter(id => id !== targetUid);
+                targetFollowers = targetFollowers.filter(id => id !== myUid);
+            } else {
+                myFollowing.push(targetUid);
+                targetFollowers.push(myUid);
+            }
+            
+            // Optimistic UI update
+            userProfileData.following = myFollowing;
+            modalSelectedUser.followers = targetFollowers;
+            DOM.modal.followers.innerText = targetFollowers.length;
+            
+            DOM.modal.btnFollow.innerHTML = !isFollowing ? '<i class="ph ph-user-minus"></i> Hủy theo dõi' : '<i class="ph ph-user-plus"></i> Theo dõi';
+            DOM.modal.btnFollow.className = !isFollowing
+                ? 'flex-1 py-2.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-xl font-medium transition flex items-center justify-center gap-2'
+                : 'flex-1 py-2.5 glass-input hover:bg-white/10 rounded-xl font-medium transition flex items-center justify-center gap-2';
+            
+            try {
+                // Update DB
+                await updateDoc(doc(db, "users", myUid), { following: myFollowing });
+                await updateDoc(doc(db, "users", targetUid), { followers: targetFollowers });
+            } catch(e) {
+                showToast("Lỗi khi theo dõi", "error");
+            }
+        });
+
+        // Chat List Listeners
+        const listenMyChats = () => {
+            // Because Firestore 'array-contains' or complex 'or' query might require indexes,
+            // standard approach for Canvas is simple query, filter in memory.
+            const q = collection(db, "chats");
+            
+            if(unsubscribeChats) unsubscribeChats();
+            
+            unsubscribeChats = onSnapshot(q, (snapshot) => {
+                myChats = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if(data.participants && data.participants.includes(currentUser.uid)) {
+                        myChats.push({ id: docSnap.id, ...data });
+                    }
+                });
+                
+                // Sort by lastMessage timestamp desc
+                myChats.sort((a,b) => {
+                    const timeA = a.lastMessageTime?.toMillis() || 0;
+                    const timeB = b.lastMessageTime?.toMillis() || 0;
+                    return timeB - timeA;
+                });
+                
+                renderChatList();
+            }, (error) => {
+                console.error("Chat list error", error);
+            });
+        };
+
+        const renderChatList = () => {
+            DOM.app.chatList.innerHTML = '';
+            if(myChats.length === 0) {
+                DOM.app.chatList.innerHTML = '<div class="text-center p-4 text-[var(--text-muted)] text-sm">Chưa có tin nhắn nào. Tìm bạn bè để bắt đầu!</div>';
+                return;
             }
 
-            document.getElementById('send-btn').addEventListener('click', sendMessage);
-            msgInput.addEventListener('keypress', (e) => {
-                if(e.key === 'Enter') sendMessage();
-            });
-
-            // Tính năng Tìm kiếm Bạn bè
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                const items = document.querySelectorAll('.chat-item');
-                items.forEach(item => {
-                    const name = item.querySelector('h4').innerText.toLowerCase();
-                    if(name.includes(query)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-
-            // Logic Demo tạo bạn bè để mở chat
-            document.getElementById('demo-add-friend').addEventListener('click', () => {
-                document.getElementById('empty-list-msg').style.display = 'none';
-                const chatList = document.getElementById('chat-list-container');
+            myChats.forEach(chat => {
+                const otherUid = chat.participants.find(id => id !== currentUser.uid);
+                const otherUser = allUsers.find(u => u.uid === otherUid) || { name: 'Người dùng', avatar: 'https://via.placeholder.com/150', status: 'offline' };
                 
-                const friendDiv = document.createElement('div');
-                friendDiv.className = 'chat-item';
-                friendDiv.innerHTML = `
-                    <div class="chat-avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=NewFriend');">
-                        <div class="online-dot"></div>
+                const isUnread = chat.lastMessageSender !== currentUser.uid && chat.unreadCount && chat.unreadCount[currentUser.uid] > 0;
+                
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl flex items-center gap-3 cursor-pointer transition ${currentActiveChat?.id === chat.id ? 'bg-white/10 border border-white/10' : 'hover:bg-white/5 border border-transparent'}`;
+                
+                const timeStr = formatTime(chat.lastMessageTime);
+                const statusDot = otherUser.status === 'online' ? '<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[var(--bg-color)] rounded-full"></span>' : '';
+                
+                let lastMsgText = chat.lastMessage || 'Bắt đầu cuộc trò chuyện';
+                if(chat.lastMessageType === 'image') lastMsgText = '🖼️ Đã gửi một ảnh';
+                
+                div.innerHTML = `
+                    <div class="relative shrink-0">
+                        <img src="${otherUser.avatar}" class="w-12 h-12 rounded-full object-cover">
+                        ${statusDot}
                     </div>
-                    <div style="flex: 1;">
-                        <h4 style="margin-bottom: 3px; font-weight: 600;">Bạn Mới Nhất</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Xin chào!</p>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 class="font-semibold text-sm truncate ${isUnread ? 'text-white' : ''}">${otherUser.name}</h4>
+                            <span class="text-xs text-[var(--text-muted)]">${timeStr}</span>
+                        </div>
+                        <p class="text-xs truncate ${isUnread ? 'text-white font-semibold' : 'text-[var(--text-muted)]'}">${lastMsgText}</p>
                     </div>
+                    ${isUnread ? '<div class="w-2.5 h-2.5 bg-blue-500 rounded-full shrink-0"></div>' : ''}
                 `;
                 
-                friendDiv.addEventListener('click', () => {
-                    document.getElementById('empty-chat-overlay').style.display = 'none';
-                    document.getElementById('current-chat-name').innerText = "Bạn Mới Nhất";
-                    document.getElementById('current-chat-avatar').style.backgroundImage = "url('https://api.dicebear.com/7.x/avataaars/svg?seed=NewFriend')";
-                    // Đóng sidebar trên mobile
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
-                
-                chatList.insertBefore(friendDiv, document.getElementById('demo-add-friend'));
+                div.onclick = () => selectChat(chat.id, otherUser);
+                DOM.app.chatList.appendChild(div);
             });
-        }
+        };
 
-        // --- MODAL FUNCTIONS ---
-        window.openProfileModal = (type) => {
-            document.getElementById('user-profile-modal').classList.remove('hidden');
+        const startChatWith = async (user) => {
+            // Check if chat exists
+            const chatId1 = `${currentUser.uid}_${user.uid}`;
+            const chatId2 = `${user.uid}_${currentUser.uid}`;
+            let existingChat = myChats.find(c => c.id === chatId1 || c.id === chatId2);
+            
+            let activeId = existingChat?.id;
+            
+            if(!existingChat) {
+                // Create new chat
+                activeId = chatId1; // Default format
+                const newChat = {
+                    participants: [currentUser.uid, user.uid],
+                    createdAt: serverTimestamp(),
+                    lastMessage: "",
+                    lastMessageTime: serverTimestamp()
+                };
+                await setDoc(doc(db, "chats", activeId), newChat);
+            }
+            selectChat(activeId, user);
         };
-        window.closeProfileModal = () => {
-            document.getElementById('user-profile-modal').classList.add('hidden');
+
+        const selectChat = async (chatId, targetUser) => {
+            currentActiveChat = { id: chatId, user: targetUser };
+            
+            // Mobile UI switch
+            if(window.innerWidth < 768) {
+                DOM.app.sidebar.classList.add('hidden');
+                DOM.app.chatArea.classList.remove('hidden');
+            }
+
+            DOM.app.chatPlaceholder.classList.add('hidden');
+            DOM.app.activeChatContainer.classList.remove('hidden');
+            
+            DOM.app.activeChatName.innerText = targetUser.name;
+            DOM.app.activeChatAvatar.src = targetUser.avatar;
+            DOM.app.activeChatStatus.innerText = targetUser.status === 'online' ? 'Đang hoạt động' : 'Ngoại tuyến';
+            
+            // Reset unread (simple approach)
+            updateDoc(doc(db, "chats", chatId), { [`unreadCount.${currentUser.uid}`]: 0 });
+            
+            // Re-render chat list to update active state UI
+            renderChatList();
+            
+            // Load messages
+            if(unsubscribeMessages) unsubscribeMessages();
+            
+            // Standard approach: fetch all in subcollection for this chat, sort in JS
+            const msgRef = collection(db, `chats/${chatId}/messages`);
+            unsubscribeMessages = onSnapshot(msgRef, (snapshot) => {
+                let msgs = [];
+                snapshot.forEach(d => msgs.push({id: d.id, ...d.data()}));
+                
+                msgs.sort((a,b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
+                renderMessages(msgs, targetUser);
+            });
         };
+
+        DOM.app.btnBackSidebar.addEventListener('click', () => {
+            DOM.app.chatArea.classList.add('hidden');
+            DOM.app.sidebar.classList.remove('hidden');
+        });
+
+        const renderMessages = (messages, targetUser) => {
+            const container = DOM.app.messagesContainer;
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const isMe = msg.senderId === currentUser.uid;
+                const time = formatTime(msg.timestamp);
+                
+                const div = document.createElement('div');
+                div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} mb-1`;
+                
+                let contentHTML = '';
+                if(msg.type === 'text') {
+                    contentHTML = `<p class="text-sm whitespace-pre-wrap">${msg.text}</p>`;
+                } else if(msg.type === 'image') {
+                    contentHTML = `<img src="${msg.imageUrl}" class="rounded-lg max-w-[200px] md:max-w-xs cursor-pointer hover:opacity-90 transition" onclick="window.open('${msg.imageUrl}', '_blank')">`;
+                }
+
+                div.innerHTML = `
+                    <div class="max-w-[70%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                        <div class="${isMe ? 'bg-blue-600 rounded-2xl rounded-tr-sm text-white' : 'glass rounded-2xl rounded-tl-sm text-white'} px-4 py-2 shadow-sm">
+                            ${contentHTML}
+                        </div>
+                        <span class="text-[10px] text-[var(--text-muted)] mt-1 mx-1">${time}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            // Auto scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        };
+
+        // --- Sending Message & Attachments ---
+        
+        const clearAttachment = () => {
+            selectedAttachment = null;
+            DOM.app.attachmentPreview.classList.add('hidden');
+            DOM.app.inputImage.value = '';
+            DOM.app.inputFile.value = '';
+        };
+
+        DOM.app.btnRemoveAttachment.addEventListener('click', clearAttachment);
+
+        DOM.app.inputImage.addEventListener('change', async (e) => {
+            if(e.target.files[0]) {
+                const file = e.target.files[0];
+                const b64 = await fileToBase64(file);
+                selectedAttachment = { file: file, type: 'image', url: b64, name: file.name };
+                
+                DOM.app.previewImg.src = b64;
+                DOM.app.previewName.innerText = file.name;
+                DOM.app.attachmentPreview.classList.remove('hidden');
+                DOM.app.attachmentPreview.classList.add('flex');
+            }
+        });
+
+        DOM.app.formSendMessage.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!currentActiveChat) return;
+            
+            const text = DOM.app.inputMessage.value.trim();
+            if(!text && !selectedAttachment) return;
+            
+            const chatId = currentActiveChat.id;
+            const targetId = currentActiveChat.user.uid;
+            
+            DOM.app.inputMessage.value = '';
+            
+            let messageData = {
+                senderId: currentUser.uid,
+                timestamp: serverTimestamp(),
+            };
+
+            if(selectedAttachment && selectedAttachment.type === 'image') {
+                messageData.type = 'image';
+                messageData.imageUrl = selectedAttachment.url; // Use base64 directly to avoid storage CORS issues in demo
+                messageData.text = text || '';
+            } else {
+                messageData.type = 'text';
+                messageData.text = text;
+            }
+            
+            clearAttachment();
+
+            try {
+                // 1. Add message
+                await addDoc(collection(db, `chats/${chatId}/messages`), messageData);
+                
+                // 2. Update chat metadata
+                await updateDoc(doc(db, "chats", chatId), {
+                    lastMessage: messageData.type === 'image' ? 'Ảnh' : text,
+                    lastMessageType: messageData.type,
+                    lastMessageTime: serverTimestamp(),
+                    lastMessageSender: currentUser.uid,
+                    [`unreadCount.${targetId}`]: 1 // Simplified unread
+                });
+            } catch (err) {
+                showToast("Lỗi gửi tin nhắn: " + err.message, "error");
+            }
+        });
+
+        // Chat Input enter to submit
+        DOM.app.inputMessage.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                DOM.app.formSendMessage.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Initialize Scroll Animations for Landing
+        setupScrollAnimations();
 
     </script>
 </body>
